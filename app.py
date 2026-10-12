@@ -15,7 +15,7 @@ client = redis.Redis(
 
 @app.get("/")
 def root():
-    return {"message": "FastAPI is working"}
+    return {"message": "FastAPI deployed with Argo CD"}
 
 @app.get("/health")
 def health():
