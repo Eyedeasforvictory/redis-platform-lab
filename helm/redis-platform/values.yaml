@@ -1,0 +1,14 @@
+api:
+  image: python-api:1.0
+  replicas: 1
+  port: 8000
+
+redis:
+  image: redis:7
+  port: 6379
+
+ingress:
+  enabled: true
+  className: nginx
+  host: localhost
+  path: /api(/|$)(.*)

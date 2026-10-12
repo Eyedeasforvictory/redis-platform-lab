@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "redis-platform.fullname" . }}-api
+spec:
+  replicas: {{ .Values.api.replicas }}
+  selector:
+    matchLabels:
+      app: {{ include "redis-platform.fullname" . }}-api
+  template:
+    metadata:
+      labels:
+        app: {{ include "redis-platform.fullname" . }}-api
+    spec:
+      containers:
+        - name: api
+          image: {{ .Values.api.image }}
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: {{ .Values.api.port }}
+          env:
+            - name: REDIS_HOST
+              value: {{ printf "%s-redis" (include "redis-platform.fullname" .) | quote }}
+            - name: REDIS_PORT
+              value: {{ .Values.redis.port | quote }}
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: {{ .Values.api.port }}
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: {{ .Values.api.port }}
+            initialDelaySeconds: 10
+            periodSeconds: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "redis-platform.fullname" . }}-api
+spec:
+  type: ClusterIP
+  selector:
+    app: {{ include "redis-platform.fullname" . }}-api
+  ports:
+    - port: 80
+      targetPort: {{ .Values.api.port }}
