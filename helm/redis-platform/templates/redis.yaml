@@ -33,5 +33,5 @@ spec:
     app: {{ include "redis-platform.fullname" . }}-redis
   ports:
     - name: tcp-redis
-    - port: {{ .Values.redis.port }}
+      port: {{ .Values.redis.port }}
       targetPort: {{ .Values.redis.port }}

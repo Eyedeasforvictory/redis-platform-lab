@@ -46,5 +46,5 @@ spec:
     app: {{ include "redis-platform.fullname" . }}-api
   ports:
     - name: http
-    - port: 80
+      port: 80
       targetPort: {{ .Values.api.port }}
